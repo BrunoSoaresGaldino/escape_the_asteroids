@@ -208,6 +208,21 @@ int main(void)
            
         }
         
+        if( key[ KEY_SPACE ] )
+        {
+            key[KEY_SPACE] = 0;
+            
+            while( !key[ KEY_SPACE ] )
+            {
+                
+               
+                
+                
+            }
+            
+            key[KEY_SPACE] = 0;
+            
+        }
         
         //ATUALIZACOES
         
