@@ -9,6 +9,27 @@
 #define _MAX( a , b ) (  (a) > (b) ? (a) : (b) )
 #define _MIN( a, b) ( (a) < (b) ? (a):  (b) )
 
+
+volatile bool exit_program;
+
+volatile int tick_counter;
+
+
+void ExitProgram( )
+{
+    exit_program = true;
+    
+}
+END_OF_FUNCTION(ExitProgram)
+
+void IncrementTick( )
+{
+    
+    tick_counter++;
+
+}
+END_OF_FUNCTION(IncrementTick)
+
 typedef struct
 {
     float x;
@@ -77,7 +98,7 @@ int main(void)
 
     double buffer_y = 0;
     double teta = 0.0;
-    double level_speed = 0.5;
+    double level_speed = 5;
     
     int    ASTEROIDS = 5;
     int    BLACK_HOLES = 3;
@@ -85,8 +106,6 @@ int main(void)
     
     int    level_counter = 0;
     int    lives = 3;
-    
-    bool   exit_program = false;
     
     int    i;
     
@@ -97,6 +116,19 @@ int main(void)
     install_mouse();
     install_keyboard();
     
+    exit_program = false;
+    
+    LOCK_FUNCTION(ExitProgram);
+    LOCK_VARIABLE(exit_program);
+    
+    tick_counter = 0;
+    
+    LOCK_FUNCTION(IncrementTick);
+    LOCK_VARIABLE(tick_counter);
+    
+    install_int_ex( IncrementTick , BPS_TO_TIMER(60) );
+    
+    set_close_button_callback(ExitProgram);
     
     set_color_depth(24);
     
@@ -173,38 +205,60 @@ int main(void)
     {
         
         
+        while( tick_counter > 0)
+        {
+        
         //USER INPUT
         
         if( key[ KEY_ESC ] )
         {    
-            exit_program = true;
+            ExitProgram( );
         }
         
         if( key[ KEY_LEFT ] )
         {
             if( player.x > 1 )
-                player.x -= 1;
+            {
+                if( player.x >= 10)
+                {
+                    player.x -= 10;
+                }
+                else 
+                {
+                    player.x -= 2;
+                }
+              
+            }
         }
         
         if( key[ KEY_RIGHT ] )
         {
             
-            if( player.x < SCREEN_W - spacecraft->w )
-                player.x += 1;
-           
+            if( player.x + 10 < SCREEN_W - spacecraft->w )
+            {   
+                if( player.x+10 < SCREEN_W - spacecraft->w )
+                {
+                    player.x += 10;
+                }
+                else 
+                {
+                    player.x +=2;
+                }
+            
+            }
         }
         
         if( key[ KEY_UP ] )
         {
-            if( player.y > 1 )
-                player.y -= 1;
+            if( player.y > 10 )
+                player.y -= 10;
         }
         
         if( key[ KEY_DOWN ] )
         {
             
-            if( player.y < SCREEN_H - spacecraft->h )
-                player.y += 1;
+            if( player.y + 10 < SCREEN_H - spacecraft->h )
+                player.y += 10;
            
         }
         
@@ -244,7 +298,7 @@ int main(void)
             
             if(level_counter % 3 == 0 )
             {
-                level_speed += 0.1;
+                level_speed += 0.5;
             }
             
         }
@@ -327,7 +381,7 @@ int main(void)
         
         if( lives <= 0 )
         {
-            exit_program = true;
+            ExitProgram();
         }
         
         teta += 0.2;
@@ -375,6 +429,10 @@ int main(void)
         draw_sprite(screen,buffer,0,0);
         
         rest(0);
+    
+        tick_counter--;
+        
+        }
     
     }
     
