@@ -384,7 +384,7 @@ int main(void)
             ExitProgram();
         }
         
-        teta += 0.2;
+        teta += 0.8;
        
        //DESENHO
        
