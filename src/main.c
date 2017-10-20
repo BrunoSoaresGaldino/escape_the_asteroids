@@ -98,9 +98,9 @@ int main(void)
 
     double buffer_y = 0;
     double teta = 0.0;
-    double level_speed = 5;
+    double level_speed = 4;
     
-    int    ASTEROIDS = 5;
+    int    ASTEROIDS = 2;
     int    BLACK_HOLES = 3;
     int    HEARTS = 2;
     
@@ -126,7 +126,7 @@ int main(void)
     LOCK_FUNCTION(IncrementTick);
     LOCK_VARIABLE(tick_counter);
     
-    install_int_ex( IncrementTick , BPS_TO_TIMER(60) );
+    install_int_ex( IncrementTick , BPS_TO_TIMER(75) );
     
     set_close_button_callback(ExitProgram);
     
@@ -384,7 +384,7 @@ int main(void)
             ExitProgram();
         }
         
-        teta += 0.8;
+        teta += 1;
        
        //DESENHO
        
@@ -430,7 +430,7 @@ int main(void)
         
         rest(0);
     
-        tick_counter--;
+        tick_counter = 0;
         
         }
     
