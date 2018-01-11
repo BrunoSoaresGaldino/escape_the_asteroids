@@ -381,6 +381,8 @@ int main(void)
         
         if( lives <= 0 )
         {
+            allegro_message("Game over! :(");
+            
             ExitProgram();
         }
         
@@ -435,6 +437,8 @@ int main(void)
         }
     
     }
+    
+    
     
 }
 END_OF_MAIN()
